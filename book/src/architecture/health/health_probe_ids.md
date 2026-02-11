@@ -49,38 +49,28 @@ Indicates that the serial number on a host does not match the serial number in t
 
 ## Hardware/BMC health probe identifiers
 
-### `Thermal`
+`carbide-hardware-health` currently reports sensor-based hardware health with a single probe ID:
 
-Indicates that the overall thermal subsystem (fans & temperature sensors) of the BMC reports an abnormal value.
+### `BmcSensor`
 
-### `Power`
+Indicates that a BMC sensor reported a warning/critical/failure condition.
 
-Indicates that the overall power subsystem (power supplies, voltages, etc) of the BMC reports an abnormal value.
+Details:
+- `target` is set to the BMC sensor ID (for example, a fan/temperature/power sensor name).
+- The alert `message` contains the entity type, reading, unit, and threshold ranges used for evaluation.
+- Classifications are documented in [Health alert classifications](health_alert_classifications.md), including `Hardware`, `SensorWarning`, `SensorCritical`, and `SensorFailure`.
 
-### `Voltage`
+`message` format:
 
-Indicates that a voltage is out of range according to the BMC
+```text
+<entity_type> '<sensor_id>': <status> - reading <value><unit> (<reading_type>), valid range: <range>, caution: <range>, critical: <range>
+```
 
-### `Temperature`
+Example:
 
-Indicates that a temperature is out of range according to the BMC
-
-### `FanSpeed`
-
-Indicates that a fan speed is out of range according to the BMC
-
-### `PowerSupply`
-
-Indicates a power supply problem reported by the BMC
-
-### `PoweredOff`
-
-Indicates that the host is powered off according to the BMC
-
-### `Leak`
-
-Indicates a leak reported according to the BMC
-
+```text
+power_supply 'PSU0_OutputPower': Critical - reading 1320.00W (power), valid range: 0.0 to 1500.0, caution: 1200.0 to 1300.0, critical: 0.0 to 1310.0
+```
 
 ## DPU related health probe identifiers
 
