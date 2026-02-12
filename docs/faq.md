@@ -16,7 +16,7 @@ No, BMM does not manage Infiniband switches in standalone mode. It requires UFM 
 
 **Does BMM maintain the database of the tenancy mappings of servers and ports?**
 
-BMM knows if an instance is allocated or not, as well as its association to a VPC. BMM knows the switches that the DPU is plugged into via LLDP, so it can relay this information for the tenant on the machine to the network ports.
+BMM stores the owner of each instance in the form of a `tenant_organization_id` that is passed during instance creation.
 
 ![BMM Tenancy Mapping](faq_tenency_mappings.png)
 
@@ -72,7 +72,7 @@ BMM exposes an API interface & authentication through JWT tokens or IdP integrat
 
 **Where is BMM run? Is it a container/microservice? Is it a single container or a collection deployed via Helm?**
 
-BMM runs on k8s cluster (3 or 5 control plane nodes recommended). It is a set of microservices for API, DNS, DHCP, Hardware Monitoring, BMC Console, Rack Management, etc.There is no helm chart for BMM today, it’s deployed with Kustomize Kubernetes manifests.
+BMM commonly runs on a Kubernetes cluster (3 or 5 control plane nodes recommended), though there is no requirement to do so. BMM runs as a set of microservices for API, DNS, DHCP, Hardware Monitoring, BMC Console, Rack Management, etc. There is currently no helm chart for BMM deployment; it can be deployed with Kubernetes Kustomize manifests.
 
 **Should I use BMM as my OS installation tool?**
 
@@ -108,4 +108,6 @@ When you provision a BMM "site" you tell it which BMC subnets are provisioned on
 
 **Are there APIs to query and debug DPU state?**
 
-DPUs will report health status (like if HBN is configured correctly, BGP peering, if the HBN container is running, that kind of thing) and heartbeat information, which version of the configuration has been applied; and also health checks for BMC-side health from the DPU's BMC for things like thermals and stuff.  You can always SSH to the DPU and poke around if the issue isn't obvious from the above. 
+DPUs will report health status (like if HBN is configured correctly, BGP peering, if the HBN container is running, that kind of thing) and heartbeat information, which version of the configuration has been applied; and also health checks for BMC-side health from the DPU's BMC for things like thermals and stuff. 
+
+This information is also visible in the admin web UI. Furthermore, you can SSH to the DPU and poke around if the issue isn't obvious using these methods.
