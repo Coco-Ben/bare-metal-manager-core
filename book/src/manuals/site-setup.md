@@ -1923,10 +1923,9 @@ deploy/carbide-base/dns/
   statefulset.yaml
 ```
 
-carbide-dns handles DNS queries from site-controller services and managed hosts and is authoritative
-for them. It works in tandem with the Unbound recursive resolver.
+The carbide-dns service handles DNS (domain name service) queries from the site-controller services and managed hosts and is authoritative for them. It works in tandem with the unbound off-the-shelf DNS service for hosts outside of a BMM installation.
 
--   DNS on **UDP/TCP port 53**
+The DNS service runs on **UDP/TCP port 53**.
 
 **External dependencies you must provide:**
 
@@ -1945,7 +1944,7 @@ for them. It works in tandem with the Unbound recursive resolver.
 
 #### Carbide Hardware Health
 
-Path in carbide repo: `deploy/carbide-base/hardware-health`
+The carbide-hardware-health service is located in the `deploy/carbide-base/hardware-health` directory. It has the following structure:
 
 ```
 deploy/carbide-base/hardware-health/
@@ -1958,15 +1957,15 @@ deploy/carbide-base/hardware-health/
   service.yaml
 ```
 
-carbide-hardware-health scrapes all host and DPU BMCs for system health information (fan speeds,
-temperatures, leak indicators). Measurements are emitted as Prometheus metrics on port **9009** at
+carbide-hardware-health scrapes all host and DPU BMCs for system health information (including fan speeds,
+temperatures, and leak indicators). Measurements are emitted as Prometheus metrics on port **9009** at
 `/metrics`. The service also calls the Carbide API to set health alerts.
 
 **TLS Certificate:** `Certificate/carbide-hardware-health-certificate`
 
 #### Nginx
 
-Path in carbide repo: `deploy/carbide-base/nginx`
+The Nginx service is located in the `deploy/carbide-base/nginx` directory. It has the following structure:
 
 ```
 deploy/carbide-base/nginx/
@@ -1982,7 +1981,7 @@ deploy/carbide-base/nginx/
 Nginx serves boot artifacts to managed hosts and DPUs when they network boot using iPXE. It works
 in tandem with the carbide-pxe service.
 
--   HTTP on **TCP port 80**
+HTTP traffic is served on **TCP port 80**.
 
 A `ConfigMap/nginx-config` is generated from `files/nginx.conf`.
 
@@ -1990,7 +1989,7 @@ A `ConfigMap/nginx-config` is generated from `files/nginx.conf`.
 
 #### Carbide NTP
 
-Path in carbide repo: `deploy/carbide-base/ntp`
+The carbide-ntp service is located in the `deploy/carbide-base/ntp` directory. It has the following structure:
 
 ```
 deploy/carbide-base/ntp/
@@ -1999,22 +1998,22 @@ deploy/carbide-base/ntp/
   statefulset.yaml
 ```
 
-carbide-ntp handles NTP queries from site-controller services and managed hosts. Uses the
+carbide-ntp handles NTP queries from site-controller services and managed hosts. It uses the
 `dockurr/chrony` image (pin to a specific tag in your overlay).
 
--   NTP on **UDP port 123**
--   Pod anti-affinity ensures replicas are spread across Kubernetes nodes
+- The NTP service runs on **UDP port 123**.
+- Pod anti-affinity ensures replicas are spread across Kubernetes nodes
 
 **Environment variables:**
 
 | Variable | Purpose |
 | --- | --- |
-| `NTP_SERVERS` | List of upstream NTP servers (local or public, must be network-accessible) |
+| `NTP_SERVERS` | List of upstream NTP servers (local or public; must be network-accessible) |
 | `NTP_DIRECTIVES` | Additional Chrony configuration directives |
 
 #### Carbide PXE
 
-Path in carbide repo: `deploy/carbide-base/pxe`
+The carbide-pxe service is located in the `deploy/carbide-base/pxe` directory. It has the following structure:
 
 ```
 deploy/carbide-base/pxe/
@@ -2028,15 +2027,15 @@ deploy/carbide-base/pxe/
   service.yaml
 ```
 
-carbide-pxe provides boot artifacts (iPXE scripts, user-data, OS images) to managed hosts over
-HTTP. It determines which OS data to serve for each host by requesting data from Carbide core, and
+The carbide-pxe service provides boot artifacts (e.g. iPXE scripts, user-data, OS images) to managed hosts over
+HTTP. It determines which OS data to serve for each host by requesting data from Carbide core and
 works in tandem with Nginx.
 
--   HTTP on **TCP port 8080**
+HTTP traffic is served on **TCP port 8080**.
 
 **External dependencies you must provide:**
 
--   `ConfigMap/carbide-pxe-env-config` — environment variables for the PXE service
+- `ConfigMap/carbide-pxe-env-config`: Environment variables for the PXE service
 
 **Environment variables:**
 
